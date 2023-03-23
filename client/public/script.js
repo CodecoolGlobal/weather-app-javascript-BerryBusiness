@@ -1,7 +1,7 @@
 const welcomeElement = function () {
   return `<div id="searchbar">
   <i class="fa-sharp fa-solid fa-location-dot" style="color: #64c3f6"></i>
-  <input list="cities" id="inputField" name="inputField" placeholder="Enter your location" type="search">
+  <input list="cities" id="inputField" name="inputField" placeholder="Enter your location">
   <datalist id="cities"></datalist>
   </div>
   `;
