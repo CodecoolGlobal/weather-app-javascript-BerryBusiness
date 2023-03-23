@@ -35,20 +35,8 @@ input {
     margin-left: 10px;
 }
 
-#search {
-    background-color: #64c3f6;
-    border-radius: 70%;
-    height: 30px;
-    width: 30px;
-    border: hidden;
-    box-shadow: 0 2px 4px darkslategray;
-    cursor: pointer;
-}
-
-#search:active {
-    background-color: #48abe0;
-    box-shadow: 0 0 2px darkslategray;
-    transform: translateY(2px);
+#cities{
+    background: aliceblue;
 }
 
 #weather {
