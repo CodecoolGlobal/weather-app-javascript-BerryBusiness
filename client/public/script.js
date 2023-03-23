@@ -50,7 +50,6 @@ HTMLElement.prototype.checked = function () {
 
 const loadEvent = function () {
   const rootElement = document.getElementById('root');
-  rootElement.checked();
   rootElement.insertAdjacentHTML('beforeend', welcomeElement());
   rootElement.insertAdjacentHTML('beforeend', '<div hidden id="spinner"></div>');
   const inputField = document.getElementById('inputField');
