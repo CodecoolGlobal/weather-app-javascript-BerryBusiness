@@ -33,7 +33,7 @@ HTMLElement.prototype.unchecked = function () {
     this.classList.add('fa-regular');
     this.classList.add('fa-star');
   } else {
-    throw new TypeError('usable only on fa-star icon', File.name, new Error().lineNumber);
+    throw new TypeError('usable only on fa-star icon');
   }
 };
 
@@ -44,12 +44,13 @@ HTMLElement.prototype.checked = function () {
     this.classList.add('fa-solid');
     this.classList.add('fa-star');
   } else {
-    throw new TypeError('usable only on fa-star icon', File.name, new Error().lineNumber);
+    throw new TypeError('usable only on fa-star icon');
   }
 };
 
 const loadEvent = function () {
   const rootElement = document.getElementById('root');
+  rootElement.checked();
   rootElement.insertAdjacentHTML('beforeend', welcomeElement());
   rootElement.insertAdjacentHTML('beforeend', '<div hidden id="spinner"></div>');
   const inputField = document.getElementById('inputField');
