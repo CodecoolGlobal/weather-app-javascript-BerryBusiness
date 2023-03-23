@@ -152,8 +152,6 @@ const loadEvent = function () {
     options = [];
     inputField.value = '';
     datalist.innerHTML = '';
-  });
-  inputField.addEventListener('focus', function () {
     favorites.forEach(function (item) {
       const option = document.createElement('option');
       option.value = item;
