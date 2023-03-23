@@ -27,7 +27,7 @@ const weatherElement = function (data) {
 };
 
 HTMLElement.prototype.unchecked = function () {
-  if (this.tagName === 'I') {
+  if (this.tagName === 'I' && this.classList.contains('fa-star')) {
     this.classList.remove('fa-solid');
     this.classList.remove('fa-star');
     this.classList.add('fa-regular');
@@ -38,7 +38,7 @@ HTMLElement.prototype.unchecked = function () {
 };
 
 HTMLElement.prototype.checked = function () {
-  if (this.tagName === 'I') {
+  if (this.tagName === 'I' && this.classList.contains('fa-star')) {
     this.classList.remove('fa-regular');
     this.classList.remove('fa-star');
     this.classList.add('fa-solid');
@@ -148,19 +148,17 @@ const loadEvent = function () {
       }
     }
   });
-  inputField.addEventListener('click', function () {
+  inputField.addEventListener('focus', function () {
     options = [];
-    if (inputField.value !== ''){
-      inputField.value = '';
-    } else {
-      datalist.innerHTML = '';
-      favorites.forEach(function (item) {
-        const option = document.createElement('option');
-        option.value = item;
-        datalist.appendChild(option);
-      });
-      datalist.focus();
-    }
+    inputField.value = '';
+    datalist.innerHTML = '';
+  });
+  inputField.addEventListener('focus', function () {
+    favorites.forEach(function (item) {
+      const option = document.createElement('option');
+      option.value = item;
+      datalist.appendChild(option);
+    });
   });
 };
 
