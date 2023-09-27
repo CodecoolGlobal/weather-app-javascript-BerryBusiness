@@ -1,45 +1,40 @@
 # Weather App
 
-## Story
+Welcome to the Weather App! This web application allows users to check the current weather conditions for a specified location. The app uses vanilla JavaScript to fetch weather data from the WeatherAPI and displays background images fetched from the PexelsAPI to match the user's selected location.
 
-People Always Talk About The Weather...
-They are also always checking the weather in native and web applications.
-Now you can go further and create your own web based Weather application!
+## Table of Contents
 
-## What are you going to learn?
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Usage](#usage)
+- 
+## Technologies Used
 
-- Create a GET requests
-- Getting data from an open API
-- Working with JSON files
+This project utilizes the following technologies:
 
-## Tasks
+- **JavaScript (Vanilla)**: A versatile and powerful scripting language used for the app's logic.
+- **HTML**: The markup language for creating the structure of the app.
+- **CSS**: Cascading Style Sheets for styling and layout.
 
-1. Create a simple input field with an autocomplete feature (when the user starts typing, after 3 characters a list of cities appear which matches that search). Create a card that shows the weather data (temperature, sky conditions, humidity, etc.) of the selected city.  Searching and selecting a new city should update the card.
-    - When we open up the page, there is a simple input field with an autocomplete feature that shows search matches after 3 characters
-    - When we search and select a city, the weather of this city is showing up
+## Getting Started
 
-2. [OPTIONAL] Do some improvements in order to make the web application more interesting.
-    - There is a button to put a city into the favourites, which list shows up when the input field is selected and the input is empty (the favourite list data doesn't need to persist after a reload)
-    - Weather panel is showing a fetch api spinner while the content is loading [Sample loading fetch API spinner on Codepen](https://codepen.io/wang0nya/pen/bzwQPr).
-    - Assign a nice background image to the chosen city that fits nicely to the site and apply it on the background. You can create object which store city name and image url.
-    - You can use Pexels API to get image for chosen city dynamically. Read the official [Pexels API Documentation](https://www.pexels.com/api/documentation).
-    - Generate a free API key from in order to access the Pexels API.
-    - Use presented endpoint to get image for chosen city e.g. for Krakow: https://api.pexels.com/v1/search?query=Krakow ![Weather App Pexels API in Postman](media/frontend/weather-app.png)
+To get started with the project, follow these steps:
 
-## General requirements
+1. Clone this repository to your local machine.
+2. Obtain API keys for the WeatherAPI and PexelsAPI and configure them in the app.
+3. Run `npm index.js` in your terminal to start the app.
+4. Enter a location to check the weather, and the app will display the current conditions along with a relevant background image.
 
-- There is a `<div id="root">` tag without children when the page loads in
-- All the contents are placed and removed by javascript
+## Features
 
-## Hints
+- **Weather Data**: Fetches and displays current weather data such as temperature, weather description, humidity, and more.
+- **Dynamic Backgrounds**: Automatically changes the background image to match the location entered by the user, using images from PexelsAPI.
+- **User-Friendly**: Simple and intuitive user interface for checking weather conditions in any location.
 
-- Plan carefully the project with your team mates
-- You can use [this](https://www.weatherapi.com/docs/) API, you have to [register](https://www.weatherapi.com/signup.aspx) for free and use an Access ID/Secret Key.
+## Usage
 
-## Background materials
-
-- <i class="far fa-exclamation"></i> [JavaScript Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
-- <i class="far fa-exclamation"></i> [JavaScript Fetch API Examples](https://scotch.io/tutorials/how-to-use-the-javascript-fetch-api-to-get-data)
-- <i class="far fa-exclamation"></i> [Weather API](https://www.weatherapi.com/docs/)
-- <i class="far fa-exclamation"></i> [Example autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
-- <i class="far fa-book-open"></i> [CSS Weather Widgets you can draw inspiration from - Do NOT copy and paste one, create your own!](https://freefrontend.com/css-weather-widgets/)
+1. Run `npm index.js` in your terminal to start the app.
+2. Enter the name of the location for which you want to check the weather (e.g., a city name).
+3. Choose the city you want from the dropdown list the hit enter.
+4. The app will display the current weather conditions and a background image that reflects the location.
