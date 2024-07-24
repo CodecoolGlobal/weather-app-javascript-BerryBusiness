@@ -1,163 +1,96 @@
-const welcomeElement = function () {
+function welcomeElement() {
   return `<div id="searchbar">
-  <i class="fa-sharp fa-solid fa-location-dot" style="color: #64c3f6"></i>
-  <input list="cities" id="inputField" name="inputField" placeholder="Enter your location">
-  <datalist id="cities"></datalist>
+      <input type="date" id="dateField" name="dateField">
   </div>
-  `;
-};
+  <button id="coord" onclick="showRandomCoordinate()">Get Random Coordinate</button>
+  <p id="coordinate"></p>
+  <p id="result"></p>`;
+}
 
-const weatherElement = function (data) {
-  return `<div id=weather>
-  <div id="cityname">
-  <h1 id="currentname">${data.location.name}</h1>
-  <button id="favoritebutton"><i id="star" class="fa-regular fa-star"></i></button>
-  </div>
-  <h2 id="currentcond">${data.current.condition.text}</h2>
-  <img id="weatherIcon" src="${data.current.condition.icon}">
-  <p id="temp">${data.current.temp_c}°</p>
-  <div id="details">
-  <i id="humidityicon" class="fa-solid fa-water"></i>
-  <p id="humidity">${data.current.humidity}%</p>
-  <i id="windicon" class="fa-solid fa-wind"></i>
-  <p id="wind">${data.current.wind_kph}kph</p>
-  </div>
-  </div>
-  `;
-};
-
-HTMLElement.prototype.unchecked = function () {
-  if (this.tagName === 'I' && this.classList.contains('fa-star')) {
-    this.classList.remove('fa-solid');
-    this.classList.remove('fa-star');
-    this.classList.add('fa-regular');
-    this.classList.add('fa-star');
+function precipitationElement(data, date) {
+  const weatherData = data.weather.find(day => day.timestamp.startsWith(date));
+  if (weatherData) {
+      return `<div id="weather">
+          <h1 id="cityname">${data.sources[0].station_name}</h1>
+          <p id="precipitation">Precipitation: ${weatherData.precipitation} mm on ${date}</p>
+      </div>`;
   } else {
-    throw new TypeError('usable only on fa-star icon');
+      return `<div id="weather">
+          <h1 id="cityname">${data.sources[0].station_name}</h1>
+          <p id="precipitation">No data available for the selected date.</p>
+      </div>`;
   }
-};
+}
 
-HTMLElement.prototype.checked = function () {
-  if (this.tagName === 'I' && this.classList.contains('fa-star')) {
-    this.classList.remove('fa-regular');
-    this.classList.remove('fa-star');
-    this.classList.add('fa-solid');
-    this.classList.add('fa-star');
-  } else {
-    throw new TypeError('usable only on fa-star icon');
-  }
-};
-
-const loadEvent = function () {
+function loadEvent() {
   const rootElement = document.getElementById('root');
   rootElement.insertAdjacentHTML('beforeend', welcomeElement());
   rootElement.insertAdjacentHTML('beforeend', '<div hidden id="spinner"></div>');
-  const inputField = document.getElementById('inputField');
-  const datalist = document.getElementById('cities');
+
+  const dateField = document.getElementById('dateField');
   const spinner = document.getElementById('spinner');
-  let options;
-  const favorites = [];
-  inputField.addEventListener('input', function () {
-    const text = inputField.value;
-    if (document.getElementById('weather')) {
-      document.getElementById('weather').parentNode.removeChild(document.getElementById('weather'));
-    }
-    rootElement.style.height = '5%';
-    rootElement.style.alignItems = 'center';
-    if (text.length > 2) {
-      fetch(`http://api.weatherapi.com/v1/search.json?key=bc01654e446444bd9fa122536232003&q=${text}`)
-        .then((response) => response.json())
-        .then((data) => {
-          datalist.innerHTML = '';
-          options = data.map((option) => {
-            if (option.region === '') {
-              return `${option.name}, ${option.country}`;
-            }
-            return `${option.name}, ${option.region}, ${option.country}`;
-          });
-          options.forEach(function (item) {
-            const option = document.createElement('option');
-            option.value = item;
-            datalist.appendChild(option);
-          });
-        })
-        .catch((error) => console.error(error));
-    }
-    const opts = datalist.childNodes;
-    for (const opt of opts) {
-      if (opt.value === inputField.value) {
-        inputField.blur();
-        document.body.style.background = 'rgb(95, 119, 200)';
-        spinner.removeAttribute('hidden');
-        rootElement.style.height = '30%';
-        rootElement.style.alignItems = 'baseline';
-        let weatherData;
-        fetch(`http://api.weatherapi.com/v1/current.json?key=bc01654e446444bd9fa122536232003&q=${text}&aqi=no`)
-          .then((response) => response.json())
-          .then((data1) => {
-            weatherData = data1;
-            datalist.innerHTML = '';
-            rootElement.style.height = '30%';
-            fetch(`https://api.pexels.com/v1/search?query=${text.split(',')[0]}&per_page=1`, {
-              headers: {
-                Authorization: 'a6jgO2UOxPiyzNNf3iFHHjHtYol0y2sJrDkY7fBGw8Ydspe5vTGsjFpF',
-              },
-            })
-              .then((resp) => {
-                return resp.json();
-              })
-              .then((data) => {
-                rootElement.insertAdjacentHTML('beforeend', weatherElement(weatherData));
-                const icon = document.getElementById('star');
-                if (data.photos.length) {
-                  document.getElementById('weather').style.display = 'none';
-                  const img = new Image();
-                  img.src = data.photos[0].src.original;
-                  img.addEventListener('load', function () {
-                    spinner.setAttribute('hidden', '');
-                    document.body.style.backgroundImage = `url(${img.src})`;
-                    document.body.style.backgroundSize = 'cover';
-                    document.body.style.backgroundRepeat = 'no-repeat';
-                    document.body.style.backgroundPosition = 'center center';
-                    rootElement.style.height = '60%';
-                    rootElement.style.alignItems = 'baseline';
-                    document.getElementById('weather').style.display = 'flex';
+
+  function toRadians(degrees) {
+      return degrees * Math.PI / 180;
+  }
+
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius of the Earth in kilometers
+      const dLat = toRadians(lat2 - lat1);
+      const dLon = toRadians(lon2 - lon1);
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // Distance in kilometers
+  }
+
+  // Array of weather stations with their IDs and coordinates
+  const stations = [
+      { id: 1228, lat: 54.165071, lon: 6.346049 },
+      { id: 954, lat: 54.1667, lon: 7.45 },
+      { id: 2115, lat: 54.174957, lon: 7.891954 },
+      { id: 3032, lat: 55.010987, lon: 8.412538 }
+  ];
+
+  // Function to find the closest station given an input latitude and longitude
+  window.findClosestStation = function(inputLat, inputLon) {
+      let closestStation = null;
+      let minDistance = Infinity;
+
+      stations.forEach(station => {
+          const distance = haversineDistance(inputLat, inputLon, station.lat, station.lon);
+          if (distance < minDistance) {
+              minDistance = distance;
+              closestStation = station;
+          }
+      });
+
+      return closestStation;
+  };
+
+  const fetchWeatherData = function () {
+      const date = dateField.value;
+
+      if (date) {
+          spinner.removeAttribute('hidden');
+
+          latitudeValues.forEach(lat => {
+              fetch(`https://api.brightsky.dev/weather?lat=${lat}&date=${date}`)
+                  .then(response => response.json())
+                  .then(data => {
+                      spinner.setAttribute('hidden', '');
+                      rootElement.insertAdjacentHTML('beforeend', precipitationElement(data, date));
+                  })
+                  .catch(error => {
+                      spinner.setAttribute('hidden', '');
+                      console.error(error);
                   });
-                } else {
-                  spinner.setAttribute('hidden', '');
-                  rootElement.style.height = '60%';
-                }
-                if (favorites.includes(inputField.value)) {
-                  icon.checked();
-                }
-                document.getElementById('favoritebutton').addEventListener('click', function () {
-                  const fullNameOfCity = `${weatherData.location.name}, ${weatherData.location.region}, ${weatherData.location.country}`;
-                  if (icon.classList.contains('fa-solid')) {
-                    favorites.splice(favorites.indexOf(fullNameOfCity), 1);
-                    icon.unchecked();
-                    datalist.innerHTML = '';
-                  } else {
-                    icon.checked();
-                    favorites.push(fullNameOfCity);
-                  }
-                });
-              })
-              .catch((error) => console.error(error));
-          })
-          .catch((error) => console.error(error));
+          });
       }
-    }
-  });
-  inputField.addEventListener('focus', function () {
-    options = [];
-    inputField.value = '';
-    datalist.innerHTML = '';
-    favorites.forEach(function (item) {
-      const option = document.createElement('option');
-      option.value = item;
-      datalist.appendChild(option);
-    });
-  });
-};
+  };
+
+  dateField.addEventListener('change', fetchWeatherData);
+}
 
 window.addEventListener('load', loadEvent);

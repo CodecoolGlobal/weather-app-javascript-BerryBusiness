@@ -7,6 +7,7 @@ body {
     position: relative;
 }
 
+
 #root {
     background-color: rgba(240, 248, 255, 0.663);
     margin: 0;
@@ -14,16 +15,29 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 5%;
-    width: 40%;
+    height: 30%;
+    width: 70%;
     display: flex;
     justify-content: center;
-    border-radius: 25px;
+    border-radius: 10px;
     align-items: center;
     transition: height 1s;
     transition-timing-function: ease-out;
     overflow: hidden;
     backdrop-filter: blur(10px);
+}
+
+#coord {
+    background-color: rgba(78, 170, 251, 0.663);
+    border-radius: 10px;
+}
+
+#coordinate {
+    margin: 10px;
+}
+
+#result {
+    margin: 10px;
 }
 
 input {
@@ -139,14 +153,4 @@ h2 {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-}
-
-#favoritebutton{
-    border-radius: 70%;
-    background:none;
-    border:none;
-    margin:0;
-    padding:0;
-    cursor: pointer;
-    color: gray;
 }
