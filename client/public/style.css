@@ -31,14 +31,36 @@ body {
     background-color: rgba(78, 170, 251, 0.663);
     border-radius: 10px;
 }
+#coordinate {
+    text-align: center;
+    margin-bottom: 20px;
+}
+  
+#spinner {
+    margin-bottom: 20px;
+}
+  
+#weather h1 {
+    font-size: 16px;
+    margin-bottom: 10px;
+
+}
+  
+#weather p {
+    font-size: 12px;
+  }
 
 #coordinate {
     margin: 10px;
 }
 
-#result {
-    margin: 10px;
+#precipitation{
+    margin: 40px;
 }
+#cityname {
+    margin: 50px;
+}
+
 
 input {
     background-color: rgba(240, 248, 255, 0);
@@ -53,16 +75,6 @@ input {
     background: aliceblue;
 }
 
-#weather {
-    display: flex;
-    position: absolute;
-    top: 50px;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    height: 70%;
-    color: gray;
-}
 
 #searchbar {
     display: flex;
@@ -100,22 +112,6 @@ h2 {
     top: 20px;
 }
 
-#temp {
-    position: relative;
-    top: 25px;
-    font-size: 80px;
-    margin: 5px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-#humidity {
-    margin-right: 48.25px;
-}
-
-#windicon {
-    border-left: 2px solid gray;
-    padding-left: 15px;
-}
 
 #spinner:not([hidden]) {
     position: fixed;
@@ -149,8 +145,4 @@ h2 {
     }
 }
 
-#cityname {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-}
+

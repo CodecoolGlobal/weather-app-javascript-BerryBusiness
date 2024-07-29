@@ -1,96 +1,78 @@
-function welcomeElement() {
+const welcomeElement = function () {
   return `<div id="searchbar">
+      <i class="fa-sharp fa-solid fa-location-dot" style="color: #64c3f6"></i>
       <input type="date" id="dateField" name="dateField">
   </div>
-  <button id="coord" onclick="showRandomCoordinate()">Get Random Coordinate</button>
+  <button onclick="showRandomCoordinate()">Get Random Coordinate</button>
   <p id="coordinate"></p>
-  <p id="result"></p>`;
-}
+  <div id="weather"></div>
+  <div hidden id="spinner">Loading...</div>`;
+};
 
-function precipitationElement(data, date) {
-  const weatherData = data.weather.find(day => day.timestamp.startsWith(date));
-  if (weatherData) {
+const precipitationElement = function (data, date) {
+  if (data.weather.length > 0) {
+      const totalPrecipitation = data.weather.reduce((acc, record) => acc + (record.precipitation || 0), 0);
       return `<div id="weather">
-          <h1 id="cityname">${data.sources[0].station_name}</h1>
-          <p id="precipitation">Precipitation: ${weatherData.precipitation} mm on ${date}</p>
+          <h1 id="cityname">${data.sources[0]?.station_name || "Unknown Station"}</h1>
+          <p id="precipitation">Total Precipitation: ${totalPrecipitation} mm on ${date}</p>
       </div>`;
   } else {
       return `<div id="weather">
-          <h1 id="cityname">${data.sources[0].station_name}</h1>
+          <h1 id="cityname">No data available</h1>
           <p id="precipitation">No data available for the selected date.</p>
       </div>`;
   }
-}
+};
 
-function loadEvent() {
+const loadEvent = function () {
   const rootElement = document.getElementById('root');
   rootElement.insertAdjacentHTML('beforeend', welcomeElement());
-  rootElement.insertAdjacentHTML('beforeend', '<div hidden id="spinner"></div>');
 
   const dateField = document.getElementById('dateField');
   const spinner = document.getElementById('spinner');
 
-  function toRadians(degrees) {
-      return degrees * Math.PI / 180;
-  }
-
-  function haversineDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Radius of the Earth in kilometers
-      const dLat = toRadians(lat2 - lat1);
-      const dLon = toRadians(lon2 - lon1);
-      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c; // Distance in kilometers
-  }
-
-  // Array of weather stations with their IDs and coordinates
-  const stations = [
-      { id: 1228, lat: 54.165071, lon: 6.346049 },
-      { id: 954, lat: 54.1667, lon: 7.45 },
-      { id: 2115, lat: 54.174957, lon: 7.891954 },
-      { id: 3032, lat: 55.010987, lon: 8.412538 }
+  const exampleCoordinates = [
+      { lat: 54.170, lon: 7.50 },
+      { lat: 54.180, lon: 6.40 },
+      { lat: 55.000, lon: 8.00 },
+      { lat: 54.200, lon: 7.80 }
   ];
 
-  // Function to find the closest station given an input latitude and longitude
-  window.findClosestStation = function(inputLat, inputLon) {
-      let closestStation = null;
-      let minDistance = Infinity;
+  window.showRandomCoordinate = function () {
+      const randomIndex = Math.floor(Math.random() * exampleCoordinates.length);
+      const randomCoordinate = exampleCoordinates[randomIndex];
 
-      stations.forEach(station => {
-          const distance = haversineDistance(inputLat, inputLon, station.lat, station.lon);
-          if (distance < minDistance) {
-              minDistance = distance;
-              closestStation = station;
-          }
-      });
+      document.getElementById("coordinate").innerText = 
+          `Random Coordinate: Latitude ${randomCoordinate.lat}, Longitude ${randomCoordinate.lon}`;
 
-      return closestStation;
+      fetchWeatherData(randomCoordinate.lat, randomCoordinate.lon);
   };
 
-  const fetchWeatherData = function () {
+  const fetchWeatherData = function (lat, lon) {
       const date = dateField.value;
-
       if (date) {
           spinner.removeAttribute('hidden');
-
-          latitudeValues.forEach(lat => {
-              fetch(`https://api.brightsky.dev/weather?lat=${lat}&date=${date}`)
-                  .then(response => response.json())
-                  .then(data => {
-                      spinner.setAttribute('hidden', '');
-                      rootElement.insertAdjacentHTML('beforeend', precipitationElement(data, date));
-                  })
-                  .catch(error => {
-                      spinner.setAttribute('hidden', '');
-                      console.error(error);
-                  });
-          });
+          fetch(`https://api.brightsky.dev/weather?date=${date}&lat=${lat}&lon=${lon}&max_dist=5000`)
+              .then(response => response.json())
+              .then(data => {
+                  spinner.setAttribute('hidden', '');
+                  console.log(data);
+                  rootElement.insertAdjacentHTML('beforeend', precipitationElement(data, date));
+              })
+              .catch(error => {
+                  spinner.setAttribute('hidden', '');
+                  console.error(error);
+              });
       }
   };
 
-  dateField.addEventListener('change', fetchWeatherData);
-}
+  dateField.addEventListener('change', () => {
+      const coordinateText = document.getElementById("coordinate").innerText;
+      if (coordinateText) {
+          const [latText, lonText] = coordinateText.match(/Latitude (\d+\.\d+), Longitude (\d+\.\d+)/).slice(1);
+          fetchWeatherData(parseFloat(latText), parseFloat(lonText));
+      }
+  });
+};
 
 window.addEventListener('load', loadEvent);
